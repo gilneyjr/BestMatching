@@ -1,22 +1,34 @@
 package main;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.List;
 
-public class Main { 
-	private static String[] database = {"pato", "gato", "sapato", "chato"};
+import main.bestmatching.BestMatching;
+import main.bestmatching.Levenshtein;
+import main.sequential.SequentialBestMatching;
+
+public class Main {
+	private final static String FILENAME = "data/english_words.txt";
 	
 	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		SimilarityDistance dist = new Levenshtein();
+		try {
+			BestMatching bm = new SequentialBestMatching(
+					new BufferedReader(new FileReader(FILENAME)),
+					new Levenshtein());
 			
-		System.out.print("Input: ");
-		String str = in.next();
-		
-		System.out.println("> " + str);
-		
-		for (int i = 0; i < database.length; i++)
-			System.out.println("[" + database[i] + "] = " + dist.calculate(str, database[i]));
-		
-		in.close();
+			String word = "caty";
+			
+			List<String> words = bm.getMostSimilarWords(word);
+			
+			System.out.print(words.size() + " most similar words: { ");
+			for(String _word : words) {
+				System.out.print(_word + " ");
+			}
+			System.out.println("}");
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not open file \""+ FILENAME + "\"! Exiting...");
+		}
 	}
 }

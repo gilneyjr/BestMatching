@@ -1,4 +1,4 @@
-package main;
+package main.bestmatching;
 
 public class Levenshtein implements SimilarityDistance {
 	@Override
