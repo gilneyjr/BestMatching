@@ -6,21 +6,35 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import main.bestmatching.BestMatching;
-import main.bestmatching.Levenshtein;
+import main.bestmatching.distance.Levenshtein;
+import main.mutex.MutexBestMatching;
+import main.mutex.MutexDictionary;
 import main.sequential.SequentialBestMatching;
+import main.sequential.SequentialDictionary;
 
 public class Main {
 	private final static String FILENAME = "data/english_words.txt";
 	private final static String WORD = "caty";
 	private final static int N_WORDS = 40;
 	
+	@SuppressWarnings("unused")
+	private static BestMatching bestMatchingSeq() throws IOException {
+		return new SequentialBestMatching(
+				new SequentialDictionary(Files.readAllLines(Paths.get(FILENAME, ""))),
+				new Levenshtein());
+	}
+	
+	@SuppressWarnings("unused")
+	private static BestMatching bestMatchingMutex() throws IOException {
+		return new MutexBestMatching(
+				new MutexDictionary(Files.readAllLines(Paths.get(FILENAME, ""))),
+				new Levenshtein());
+	}
+	
 	public static void main(String[] args) {
-		BestMatching bm;
 		try {
 			System.out.print("Loading dictionary... ");
-			bm = new SequentialBestMatching(
-					Files.readAllLines(Paths.get(FILENAME, "")),
-					new Levenshtein());
+			BestMatching bm = bestMatchingMutex();
 			System.out.println("Ok!");
 			
 			System.out.print("Computing similarity distance... ");

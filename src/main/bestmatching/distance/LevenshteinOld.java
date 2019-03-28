@@ -1,4 +1,4 @@
-package main.bestmatching;
+package main.bestmatching.distance;
 
 public class LevenshteinOld implements SimilarityDistance {
 
