@@ -1,11 +1,12 @@
 package main.concurrent;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import main.concurrent.callable.ReaderCallable;
 import main.concurrent.runnable.CalculateAndWriteRunnable;
-import main.concurrent.runnable.ReaderRunnable;
 import main.util.BestMatching;
 import main.util.Counter;
 import main.util.Pairs;
@@ -28,11 +29,11 @@ public class BestMatchingConcurrent extends BestMatching {
 	public void read(String dicPath, Strings dic, String inputPath, Strings input) {
 		ExecutorService exec = Executors.newFixedThreadPool(2);
 		
-		Runnable r1 = new ReaderRunnable(dicPath, dic);
-		Runnable r2 = new ReaderRunnable(inputPath, input);
+		Callable<Void> c1 = new ReaderCallable(dicPath, dic);
+		Callable<Void> c2 = new ReaderCallable(inputPath, input);
 		
-		exec.execute(r1);
-		exec.execute(r2);
+		exec.submit(c1);
+		exec.submit(c2);
 		
 		exec.shutdown();
 		try {
