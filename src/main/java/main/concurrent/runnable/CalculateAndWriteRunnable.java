@@ -2,8 +2,9 @@ package main.concurrent.runnable;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import main.util.Counter;
 import main.util.Pair;
@@ -28,21 +29,23 @@ public class CalculateAndWriteRunnable implements Runnable {
 		int i_input_words;
 		while((i_input_words = count.next()) < input.size()) {
 			String input_word = input.get(i_input_words);
-			try {
-				List<Thread> thrs = new ArrayList<>();
+			try {				
+				ExecutorService exec = Executors.newFixedThreadPool(4);
 				Pairs sim = pairsClass.newInstance();
 				Counter dicCounter = count.getClass().newInstance();
+				
 				for(int j = 0; j < 4; j++) {
-					Thread t = new Thread(new CalculateSimilarityRunnable(dic, sim, input_word, dicCounter));
-					thrs.add(t);
-					t.start();
+					Runnable r = new CalculateSimilarityRunnable(dic, sim, input_word, dicCounter);
+					exec.execute(r);
 				}
 				
+				exec.shutdown();
 				try {
-					for(Thread t : thrs)
-						t.join();
+					exec.awaitTermination(24, TimeUnit.HOURS);
 				} catch (InterruptedException e) {
-					System.err.println("Thread \"" + Thread.currentThread().getName() + "\" was interrupted!");
+					e.printStackTrace();
+					System.err.println("Falha em sincronizar executor no run na classe CalculateAndWriteRunnable!");
+					System.exit(-1);
 				}
 				
 				sim.sort();

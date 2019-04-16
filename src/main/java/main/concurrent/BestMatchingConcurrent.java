@@ -1,7 +1,8 @@
 package main.concurrent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import main.concurrent.runnable.CalculateAndWriteRunnable;
 import main.concurrent.runnable.ReaderRunnable;
@@ -25,34 +26,42 @@ public class BestMatchingConcurrent extends BestMatching {
 
 	@Override
 	public void read(String dicPath, Strings dic, String inputPath, Strings input) {
-		Thread t1 = new Thread(new ReaderRunnable(dicPath, dic));
-		Thread t2 = new Thread(new ReaderRunnable(inputPath, input));
+		ExecutorService exec = Executors.newFixedThreadPool(2);
 		
-		t1.start();
-		t2.start();
+		Runnable r1 = new ReaderRunnable(dicPath, dic);
+		Runnable r2 = new ReaderRunnable(inputPath, input);
 		
+		exec.execute(r1);
+		exec.execute(r2);
+		
+		exec.shutdown();
 		try {
-			t1.join();
-			t2.join();
-		} catch (InterruptedException e) {}
+			exec.awaitTermination(24, TimeUnit.HOURS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.err.println("Falha em sincronizar executor no método read!");
+			System.exit(-1);
+		}
 	}
 
 	@Override
 	public void calculateAndWrite(Strings dic, Strings input) {
-		List<Thread> thrs = new ArrayList<>();
+		ExecutorService exec = Executors.newFixedThreadPool(4);
+		
 		try {
 			Counter count = countClass.newInstance();
 			for(int i = 0; i < 4; i++) {
-				Thread t = new Thread(new CalculateAndWriteRunnable(dic, input, count, pairsClass));
-				thrs.add(t);
-				t.start();
+				Runnable r = new CalculateAndWriteRunnable(dic, input, count, pairsClass);
+				exec.execute(r);
 			}
 			
+			exec.shutdown();
 			try {
-				for(Thread t : thrs)
-					t.join();
+				exec.awaitTermination(24, TimeUnit.HOURS);
 			} catch (InterruptedException e) {
-				System.err.println("Thread \"" + Thread.currentThread().getName() + "\" was interrupted!");
+				e.printStackTrace();
+				System.err.println("Falha em sincronizar executor no método calculateAndWrite!");
+				System.exit(-1);
 			}
 			
 		} catch (InstantiationException | IllegalAccessException e1) {
@@ -60,5 +69,4 @@ public class BestMatchingConcurrent extends BestMatching {
 			System.exit(-1);
 		}
 	}
-
 }

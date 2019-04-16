@@ -13,7 +13,7 @@ import main.concurrent.mutex.PairsMutex;
 import main.concurrent.mutex.StringsMutex;
 import main.util.BestMatching;
 
-public class BestMatchingMutex extends AbstractJavaSamplerClient implements Serializable {	
+public class BenchMutex extends AbstractJavaSamplerClient implements Serializable {	
 	private static final long serialVersionUID = -6045110927370080515L;
 
 	@Override
