@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import main.concurrent.callable.ReaderCallable;
+import main.concurrent.forkjoin.CalculateAndWriteForkJoin;
 import main.concurrent.runnable.CalculateAndWriteRunnable;
 import main.util.BestMatching;
 import main.util.Counter;
@@ -52,8 +53,8 @@ public class BestMatchingConcurrent extends BestMatching {
 		try {
 			Counter count = countClass.newInstance();
 			for(int i = 0; i < 4; i++) {
-				Runnable r = new CalculateAndWriteRunnable(dic, input, count, pairsClass);
-				exec.execute(r);
+				Callable<Void> r = new CalculateAndWriteForkJoin(dic, input, count, pairsClass);
+				exec.submit(r);
 			}
 			
 			exec.shutdown();
