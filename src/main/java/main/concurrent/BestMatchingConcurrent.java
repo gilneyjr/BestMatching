@@ -42,7 +42,7 @@ public class BestMatchingConcurrent extends BestMatching {
 		List<Thread> thrs = new ArrayList<>();
 		try {
 			Counter count = countClass.newInstance();
-			for(int i = 0; i < 4; i++) {
+			for(int i = 0; i < 2; i++) {
 				Thread t = new Thread(new CalculateAndWriteRunnable(dic, input, count, pairsClass));
 				thrs.add(t);
 				t.start();

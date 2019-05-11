@@ -26,13 +26,14 @@ public class CalculateAndWriteRunnable implements Runnable {
 	@Override
 	public void run() {
 		int i_input_words;
-		while((i_input_words = count.next()) < input.size()) {
+		final int input_size = input.size();
+		while((i_input_words = count.next()) < input_size) {
 			String input_word = input.get(i_input_words);
 			try {
 				List<Thread> thrs = new ArrayList<>();
 				Pairs sim = pairsClass.newInstance();
 				Counter dicCounter = count.getClass().newInstance();
-				for(int j = 0; j < 4; j++) {
+				for(int j = 0; j < 2; j++) {
 					Thread t = new Thread(new CalculateSimilarityRunnable(dic, sim, input_word, dicCounter));
 					thrs.add(t);
 					t.start();

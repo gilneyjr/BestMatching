@@ -20,10 +20,9 @@ public class StringsSemaphore implements Strings {
 		try {
 			semaphore.acquire();
 			list.add(e);
+			semaphore.release();
 		} catch (InterruptedException e1) {
 			System.err.println("Thread \"" + Thread.currentThread().getName() + "\" was interrupted!");
-		} finally {
-			semaphore.release();
 		}
 	}
 
@@ -33,11 +32,11 @@ public class StringsSemaphore implements Strings {
 		try {
 			semaphore.acquire();
 			str = list.get(index);
+			semaphore.release();
 		} catch (InterruptedException e1) {
 			System.err.println("Thread \"" + Thread.currentThread().getName() + "\" was interrupted!");
-		} finally {
-			semaphore.release();
 		}
+		
 		return str;
 	}
 
@@ -47,12 +46,10 @@ public class StringsSemaphore implements Strings {
 		try {
 			semaphore.acquire();
 			i = list.size();
+			semaphore.release();
 		} catch (InterruptedException e1) {
 			System.err.println("Thread \"" + Thread.currentThread().getName() + "\" was interrupted!");
-		} finally {
-			semaphore.release();
 		}
 		return i;
 	}
-
 }
