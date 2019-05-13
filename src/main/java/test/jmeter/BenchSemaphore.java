@@ -23,9 +23,8 @@ public class BenchSemaphore extends AbstractJavaSamplerClient implements Seriali
 		String dictionary = context.getParameter("dictionary");
 		String input_words = context.getParameter("input_words");
 		
-		result.sampleStart();
-		
 		BestMatching bm = new BestMatchingConcurrent(StringsSemaphore.class, CounterSemaphore.class, PairsSemaphore.class);
+		result.sampleStart();
 		bm.calculate(dictionary, input_words);
 		result.sampleEnd();
 		

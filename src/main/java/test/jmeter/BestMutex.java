@@ -13,7 +13,7 @@ import main.concurrent.mutex.PairsMutex;
 import main.concurrent.mutex.StringsMutex;
 import main.util.BestMatching;
 
-public class BestMatchingMutex extends AbstractJavaSamplerClient implements Serializable {	
+public class BestMutex extends AbstractJavaSamplerClient implements Serializable {	
 	private static final long serialVersionUID = -6045110927370080515L;
 
 	@Override
@@ -23,9 +23,8 @@ public class BestMatchingMutex extends AbstractJavaSamplerClient implements Seri
 		String dictionary = context.getParameter("dictionary");
 		String input_words = context.getParameter("input_words");
 		
-		result.sampleStart();
-		
 		BestMatching bm = new BestMatchingConcurrent(StringsMutex.class, CounterMutex.class, PairsMutex.class);
+		result.sampleStart();
 		bm.calculate(dictionary, input_words);
 		result.sampleEnd();
 		

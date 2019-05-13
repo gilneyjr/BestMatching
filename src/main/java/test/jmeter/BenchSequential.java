@@ -22,9 +22,8 @@ public class BenchSequential extends AbstractJavaSamplerClient implements Serial
 		String dictionary = context.getParameter("dictionary");
 		String input_words = context.getParameter("input_words");
 		
-		result.sampleStart();
-		
 		BestMatching bm = new BestMatchingSequential(StringsSequential.class);
+		result.sampleStart();
 		bm.calculate(dictionary, input_words);
 		result.sampleEnd();
 		
