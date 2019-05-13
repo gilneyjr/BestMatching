@@ -45,8 +45,8 @@ public class CalculateSimilarityRunnable implements Runnable {
 	@Override
 	public void run() {
 		int i_dic;
-		
-		while((i_dic = count.next()) < dic.size()) {
+		int dic_size = dic.size();
+		while((i_dic = count.next()) < dic_size) {
 			String dic_word = dic.get(i_dic);
 			sim.add(new Pair(similarityDistance(dic_word, input), dic_word));
 		}

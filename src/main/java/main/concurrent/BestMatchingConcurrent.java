@@ -50,7 +50,7 @@ public class BestMatchingConcurrent extends BestMatching {
 		
 		try {
 			Counter count = countClass.newInstance();
-			for(int i = 0; i < 4; i++) {
+			for(int i = 0; i < 2; i++) {
 				Runnable r = new CalculateAndWriteRunnable(dic, input, count, pairsClass);
 				exec.execute(r);
 			}
