@@ -8,7 +8,6 @@ import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
 import main.concurrent.BestMatchingConcurrent;
-import main.concurrent.semaphore.CounterSemaphore;
 import main.concurrent.semaphore.PairsSemaphore;
 import main.concurrent.semaphore.StringsSemaphore;
 import main.util.BestMatching;
@@ -25,7 +24,7 @@ public class BenchSemaphore extends AbstractJavaSamplerClient implements Seriali
 		
 		result.sampleStart();
 		
-		BestMatching bm = new BestMatchingConcurrent(StringsSemaphore.class, CounterSemaphore.class, PairsSemaphore.class);
+		BestMatching bm = new BestMatchingConcurrent(StringsSemaphore.class, PairsSemaphore.class);
 		bm.calculate(dictionary, input_words);
 		result.sampleEnd();
 		

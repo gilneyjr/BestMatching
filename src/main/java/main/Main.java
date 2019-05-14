@@ -1,9 +1,7 @@
 package main;
 
-import main.concurrent.BestMatchingConcurrent;
-import main.concurrent.mutex.CounterMutex;
 import main.concurrent.mutex.PairsMutex;
-import main.concurrent.mutex.StringsMutex;
+import main.forkjoinApproach.BestMatchingForkJoin;
 import main.util.BestMatching;
 
 public class Main {
@@ -22,7 +20,9 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("Mutex Algorithm!");
-		test(new BestMatchingConcurrent(StringsMutex.class, CounterMutex.class, PairsMutex.class));
+		for (int i = 0; i < 4; i++) {
+			System.out.println("Mutex Algorithm!");
+			test(new BestMatchingForkJoin(PairsMutex.class));
+		}
 	}
 }

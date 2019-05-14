@@ -1,4 +1,4 @@
-package main.concurrent.forkjoin;
+package main.forkjoinApproach.forkjoin;
 
 import java.io.FileWriter;
 import java.io.IOException;

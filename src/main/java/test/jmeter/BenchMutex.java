@@ -7,10 +7,8 @@ import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
-import main.concurrent.BestMatchingConcurrent;
-import main.concurrent.mutex.CounterMutex;
 import main.concurrent.mutex.PairsMutex;
-import main.concurrent.mutex.StringsMutex;
+import main.forkjoinApproach.BestMatchingForkJoin;
 import main.util.BestMatching;
 
 public class BenchMutex extends AbstractJavaSamplerClient implements Serializable {	
@@ -25,7 +23,7 @@ public class BenchMutex extends AbstractJavaSamplerClient implements Serializabl
 		
 		result.sampleStart();
 		
-		BestMatching bm = new BestMatchingConcurrent(StringsMutex.class, CounterMutex.class, PairsMutex.class);
+		BestMatching bm = new BestMatchingForkJoin(PairsMutex.class);
 		bm.calculate(dictionary, input_words);
 		result.sampleEnd();
 		
