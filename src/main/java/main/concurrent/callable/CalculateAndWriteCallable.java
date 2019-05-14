@@ -29,14 +29,15 @@ public class CalculateAndWriteCallable implements Callable<Void> {
 	@Override
 	public Void call() throws Exception {
 		int i_input_words;
-		while((i_input_words = count.next()) < input.size()) {
+		int input_size = input.size();
+		while((i_input_words = count.next()) < input_size) {
 			String input_word = input.get(i_input_words);
 			try {				
-				ExecutorService exec = Executors.newFixedThreadPool(4);
+				ExecutorService exec = Executors.newFixedThreadPool(2);
 				Pairs sim = pairsClass.newInstance();
 				Counter dicCounter = count.getClass().newInstance();
 				
-				for(int j = 0; j < 4; j++) {
+				for(int j = 0; j < 2; j++) {
 					Callable<Void> c = new CalculateSimilarityCallable(dic, sim, input_word, dicCounter);
 					exec.submit(c);
 				}

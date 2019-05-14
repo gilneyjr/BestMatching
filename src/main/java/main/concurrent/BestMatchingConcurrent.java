@@ -5,8 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import main.concurrent.callable.CalculateAndWriteCallable;
 import main.concurrent.callable.ReaderCallable;
-import main.concurrent.runnable.CalculateAndWriteRunnable;
 import main.util.BestMatching;
 import main.util.Counter;
 import main.util.Pairs;
@@ -47,13 +47,13 @@ public class BestMatchingConcurrent extends BestMatching {
 
 	@Override
 	public void calculateAndWrite(Strings dic, Strings input) {
-		ExecutorService exec = Executors.newFixedThreadPool(4);
+		ExecutorService exec = Executors.newFixedThreadPool(2);
 		
 		try {
 			Counter count = countClass.newInstance();
-			for(int i = 0; i < 4; i++) {
-				Runnable r = new CalculateAndWriteRunnable(dic, input, count, pairsClass);
-				exec.execute(r);
+			for(int i = 0; i < 2; i++) {
+				Callable<Void> c = new CalculateAndWriteCallable(dic, input, count, pairsClass);
+				exec.submit(c);
 			}
 			
 			exec.shutdown();
