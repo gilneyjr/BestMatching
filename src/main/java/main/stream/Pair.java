@@ -1,4 +1,4 @@
-package main.util;
+package main.stream;
 
 public class Pair {
 	private Integer first;

@@ -1,4 +1,4 @@
-package test.jmh.semaphore;
+package test.jmh.stream;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,14 +12,14 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import test.jmh.Test;
 
-public class BenchCalculateAndWriteSemaphore {
+public class BenchCalculateAndWriteParallelStream {
 	@Benchmark
 	@BenchmarkMode(Mode.AverageTime)
 	@Fork(value=Test.FORK_VALUE, warmups=Test.FORK_WARMUP)
 	@Warmup(iterations=Test.WARMUP_ITERATIONS)
 	@Measurement(iterations=Test.MEASUREMENT_ITERATIONS)
 	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void test(StateSemaphore ms) {
-		ms.calculateAndWrite(ms.dic, ms.input);
+	public void test(StateParallelStream state) {
+		state.calculateAndWrite("data/output/");
 	}
 }

@@ -1,4 +1,4 @@
-package test.jmh.sequential;
+package test.jmh.stream;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,19 +10,16 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
 
-import main.sequential.util.StringsSequential;
 import test.jmh.Test;
 
-public class BenchReadSequential {
+public class BenchReadParallelStream {
 	@Benchmark
 	@BenchmarkMode(Mode.AverageTime)
 	@Fork(value=Test.FORK_VALUE, warmups=Test.FORK_WARMUP)
 	@Warmup(iterations=Test.WARMUP_ITERATIONS)
 	@Measurement(iterations=Test.MEASUREMENT_ITERATIONS)
 	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void test(StateSequential ms) {
-		StringsSequential dic = new StringsSequential();
-		StringsSequential input = new StringsSequential();
-		ms.read("data/dictionary.txt", dic, "data/input_words.txt", input);
+	public void test(StateParallelStream state) {
+		state.read("data/dictionary.txt", "data/input_words.txt");
 	}
 }

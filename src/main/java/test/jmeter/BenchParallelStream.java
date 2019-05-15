@@ -7,25 +7,23 @@ import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
-import main.concurrent.BestMatchingConcurrent;
-import main.concurrent.mutex.CounterMutex;
-import main.concurrent.mutex.PairsMutex;
-import main.concurrent.mutex.StringsMutex;
-import main.util.BestMatching;
+import main.stream.BestMatchingStream;
 
-public class BestMutex extends AbstractJavaSamplerClient implements Serializable {	
-	private static final long serialVersionUID = -6045110927370080515L;
+public class BenchParallelStream extends AbstractJavaSamplerClient implements Serializable {
+	private static final long serialVersionUID = 4151854298674996428L;
 
 	@Override
 	public SampleResult runTest(JavaSamplerContext context) {
 		SampleResult result = new SampleResult();
-		result.setSampleLabel("Mutex Algorithm Benchmark");
+		result.setSampleLabel("Parallel Stream Algorithm Benchmark");
 		String dictionary = context.getParameter("dictionary");
 		String input_words = context.getParameter("input_words");
+		String output = context.getParameter("output");
 		
-		BestMatching bm = new BestMatchingConcurrent(StringsMutex.class, CounterMutex.class, PairsMutex.class);
+		BestMatchingStream bm = new BestMatchingStream();
+		
 		result.sampleStart();
-		bm.calculate(dictionary, input_words);
+		bm.calculate(dictionary, input_words, output);
 		result.sampleEnd();
 		
 		result.setResponseCode("200");
@@ -40,6 +38,8 @@ public class BestMutex extends AbstractJavaSamplerClient implements Serializable
 		Arguments defaultParameters = new Arguments();
 		defaultParameters.addArgument("dictionary",  "/home/junior/Documentos/GitHub/BestMatching/data/dictionary.txt");
 		defaultParameters.addArgument("input_words", "/home/junior/Documentos/GitHub/BestMatching/data/input_words.txt");
+		defaultParameters.addArgument("output", "/home/junior/Documentos/Test/");
 		return defaultParameters;
 	}
+	
 }

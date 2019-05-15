@@ -1,20 +1,18 @@
 package main.stream;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import main.util.Pair;
 
 public class BestMatchingStream {
+	
+	private List<String> dic;
+	private List<String> input;
 	
 	private int levenshtein(int[][] memo, String str1, String str2, int i, int j) {
 		if(Math.min(i,j) == 0)
@@ -45,45 +43,45 @@ public class BestMatchingStream {
 			list = Files.lines(Paths.get(path)).collect(Collectors.toList());
 		} catch (IOException e) {
 			System.out.println("Não foi possível abrir arquivo \"" + path + "\".");
-			System.exit(-1);
 		}
 		return list;
 	}
 	
-	public void run(String dicPath, String inputPath) {
-		final List<String> dic = read(dicPath);
-		
-		try(BufferedReader br = new BufferedReader(new FileReader(new File(inputPath)))) {
-			Stream<String> input = br.lines();
-			input.parallel()
-				.forEach(inputStr -> {
-					try(BufferedWriter bw = new BufferedWriter(new FileWriter(new File("data/output/"+inputStr+".csv")))) {
-						List<Pair> result = dic.parallelStream()
-							// calculate similarity
-							.map(dicStr -> new Pair(similarityDistance(inputStr, dicStr), dicStr))
-							// sort
-							.sorted((p1, p2) -> {
-								if(p1.getFirst() == p2.getFirst())
-									return p1.getSecond().compareTo(p2.getSecond());
-								return p1.getFirst() - p2.getFirst();
-							})
-							// collect to list
-							.collect(Collectors.toList());
-						
-						// Write to a file
-						bw.write("Words;Similarity to \""+inputStr+"\"\n");
-						for(Pair p : result)
-							bw.write(p.getSecond() + ";" + p.getFirst().toString() + "\n");
-					}
-					catch(IOException e) {
-						System.err.println("Could not write \"data/output/" + inputStr + ".csv\".");
-						System.exit(-1);
-					}
-				});
-		} catch (IOException e) {
-			System.out.println("Não foi possível abrir arquivo \"" + inputPath + "\".");
-			System.exit(-1);
-		}
+	public void read(String dicPath, String inputPath) {
+		dic = read(dicPath);
+		input = read(inputPath);
+	}
+	
+	public void calculate(String dicPath, String inputPath, String outputDir) {
+		read(dicPath, inputPath);
+		calculateAndWrite(outputDir);
+	}
+	
+	public void calculateAndWrite(String outputDir) {
+		input.parallelStream()
+			.forEach(inputStr -> {
+				try(BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputDir+inputStr+".csv")))) {
+					List<Pair> result = dic.parallelStream()
+						// calculate similarity
+						.map(dicStr -> new Pair(similarityDistance(inputStr, dicStr), dicStr))
+						// sort
+						.sorted((p1, p2) -> {
+							if(p1.getFirst() == p2.getFirst())
+								return p1.getSecond().compareTo(p2.getSecond());
+							return p1.getFirst() - p2.getFirst();
+						})
+						// collect to list
+						.collect(Collectors.toList());
+					
+					// Write to a file
+					bw.write("Words;Similarity to \""+inputStr+"\"\n");
+					for(Pair p : result)
+						bw.write(p.getSecond() + ";" + p.getFirst().toString() + "\n");
+				}
+				catch(IOException e) {
+					System.out.println("Could not write \"data/output/" + inputStr + ".csv\".");
+				}
+			});
 	}
 
 }
